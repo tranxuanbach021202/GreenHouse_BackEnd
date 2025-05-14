@@ -1,15 +1,17 @@
 package com.example.doanbe.controllers;
 
+import com.example.doanbe.dto.request.UpdateProfileRequest;
+import com.example.doanbe.dto.response.UserProfileResponse;
 import com.example.doanbe.payload.request.UserPagingRequest;
+import com.example.doanbe.payload.response.MessageResponse;
 import com.example.doanbe.payload.response.SuccessResponse;
 import com.example.doanbe.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -34,4 +36,17 @@ public class UserController {
                 .search(search).build();
         return ResponseEntity.ok(userService.getUsersPaging(request));
     }
+
+    @PutMapping("/profile")
+    public ResponseEntity<MessageResponse> updateProfile(@RequestBody UpdateProfileRequest request) {
+        userService.updateProfile(request);
+        return ResponseEntity.ok(new MessageResponse("Cập Nhật Profile Thành công"));
+    }
+
+
+    @GetMapping("/profile")
+    public ResponseEntity<SuccessResponse> getMyProfile() {
+        return ResponseEntity.ok(userService.getCurrentUserProfile());
+    }
+
 }

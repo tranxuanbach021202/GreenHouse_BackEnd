@@ -1,5 +1,6 @@
 package com.example.doanbe.document;
 
+import com.example.doanbe.enums.InvitationStatus;
 import com.example.doanbe.enums.ProjectRole;
 import lombok.Data;
 import org.springframework.data.annotation.Id;

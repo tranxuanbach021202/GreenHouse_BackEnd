@@ -12,6 +12,4 @@ public class Level {
     private String levelCode;
     private String levelName;
 
-    private Date createdAt;
-    private Date updatedAt;
 }

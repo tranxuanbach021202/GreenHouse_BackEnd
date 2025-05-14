@@ -13,6 +13,7 @@ import com.example.doanbe.payload.request.SignUpRequest;
 import com.example.doanbe.payload.response.JwtResponse;
 import com.example.doanbe.payload.response.MessageResponse;
 import com.example.doanbe.payload.response.TokenRefreshResponse;
+import com.example.doanbe.repository.RefreshTokenRepository;
 import com.example.doanbe.repository.RoleRepository;
 import com.example.doanbe.repository.UserRepository;
 import com.example.doanbe.security.jwt.JwtUtils;
@@ -20,7 +21,6 @@ import com.example.doanbe.services.AuthService;
 import com.example.doanbe.services.EmailService;
 import com.example.doanbe.services.RefreshTokenService;
 import com.example.doanbe.services.UserDetailsImpl;
-import com.nimbusds.oauth2.sdk.SuccessResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -63,15 +64,11 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     RefreshTokenService refreshTokenService;
 
+    @Autowired
+    RefreshTokenRepository refreshTokenRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
-
-
-
-    @Override
-    public SuccessResponse authenticate(LoginRequest loginRequest) {
-        return null;
-    }
 
     @Override
     public ResponseEntity<?> registerUser(SignUpRequest signUpRequest) {
@@ -89,6 +86,9 @@ public class AuthServiceImpl implements AuthService {
                 signUpRequest.getEmail(),
                 passwordEncoder.encode(signUpRequest.getPassword())
         );
+
+        user.setCreatedAt(LocalDateTime.now());
+
 
         Set<String> strRoles = signUpRequest.getRoles(); // Giả sử đã đổi tên thành getRoles()
         Set<Role> roles = new HashSet<>();
@@ -169,6 +169,66 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
+
+
+    @Override
+    public ResponseEntity<?> forgotPassword(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(404, 44, "Không tìm thấy người dùng"));
+        emailService.sendOtpEmail(user.getEmail());
+        return ResponseEntity.ok("Đã gửi OTP tới email của bạn");
+    }
+
+
+    @Override
+    public String verifyOtpAndGenerateResetToken(String email, String otp) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(404, 1, "Không tìm thấy người dùng"));
+
+        if (!otp.equals(user.getOneTimePassword()) || user.getOtpExpiryTime().isBefore(LocalDateTime.now())) {
+            throw new AppException(400, 2, "OTP không hợp lệ hoặc đã hết hạn");
+        }
+
+        // Tạo JWT resetToken
+        String resetToken = jwtUtils.generateResetToken(user.getUsername());
+
+        return resetToken;
+    }
+
+//    public void resetPassword(String resetToken, String newPassword) {
+//        String username = jwtUtils.getUserNameFromJwtToken(resetToken);
+//        User user = userRepository.findByUsername(username)
+//                .orElseThrow(() -> new AppException(404, 1, "Không tìm thấy người dùng"));
+//
+//        user.setPassword(passwordEncoder.encode(newPassword));
+//        user.setOneTimePassword(null);
+//        user.setOtpExpiryTime(null);
+//        userRepository.save(user);
+//    }
+
+
+
+    @Override
+    public void resetPassword(String resetToken, String newPassword) {
+        if (!jwtUtils.validateJwtToken(resetToken)) {
+            throw new AppException(401, 10, "Token không hợp lệ hoặc đã hết hạn");
+        }
+
+        String username = jwtUtils.getUserNameFromJwtToken(resetToken);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(404, 11, "Không tìm thấy người dùng"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setUpdatedAt(LocalDateTime.now());
+
+        user.setOneTimePassword(null);
+        user.setOtpExpiryTime(null);
+
+        userRepository.save(user);
+    }
+
+
+
     @Override
     public ResponseEntity<?> refreshToken(RefreshTokenRequest refreshTokenRequest) {
         String requestRefreshToken = refreshTokenRequest.getRefreshToken();
@@ -195,6 +255,12 @@ public class AuthServiceImpl implements AuthService {
 
     private String generateOTP() {
         return String.format("%04d", new Random().nextInt(9999));
+    }
+
+    @Override
+    public void logout(String token) {
+        String username = jwtUtils.getUserNameFromJwtToken(token);
+        refreshTokenRepository.deleteByUserId(username);
     }
     
 }

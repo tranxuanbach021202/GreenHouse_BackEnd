@@ -109,7 +109,9 @@ public class EmailServiceImpl implements EmailService {
     private void  saveOTP(String email, String otp) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(400, 51, "Lỗi: Không tìm thấy email trong database!"));
+        LocalDateTime expiry = LocalDateTime.now().plusMinutes(5);
         user.setOtp(otp);
+        user.setOtpAttempts(0);
         userRepository.save(user);
     }
 }

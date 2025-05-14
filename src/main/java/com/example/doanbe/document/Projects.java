@@ -1,5 +1,6 @@
 package com.example.doanbe.document;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,5 +28,8 @@ public class Projects {
     private ProjectOwner owner;
     private Date createdAt;
     private Date updatedAt;
+    @Field("isPublic")
+    @JsonProperty("isPublic")
+    private boolean publicVisible = false;
 }
 

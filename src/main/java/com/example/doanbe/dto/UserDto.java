@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class UserDto {
     private String id;
     private String username;
+    private String displayName;
     private String email;
     private String urlAvatar;
     private LocalDateTime createdAt;

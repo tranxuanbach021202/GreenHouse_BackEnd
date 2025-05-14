@@ -13,7 +13,8 @@ public class ProjectMemberResponse {
     private String userId;
     private String userName;
     private String displayName;
-    private String avatar;
+    private String urlAvatar;
+    private String email;
     private String role;
 }
 

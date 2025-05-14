@@ -4,11 +4,11 @@ import com.example.doanbe.document.Criterion;
 import com.example.doanbe.document.Factor;
 import com.example.doanbe.document.Plot;
 import com.example.doanbe.document.Treatment;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -32,5 +32,7 @@ public class ProjectDetailResponse {
     private int replicates;
     private int columns;
     private List<List<Plot>> layout;
+    @JsonProperty("isPublic")
+    private boolean publicVisible;
 }
 
