@@ -7,9 +7,7 @@ import java.util.List;
 
 @Data
 public class MeasurementRequest {
-    private String projectId;
-    private LocalDate start;
-    private LocalDate end;
+    private String measurementId;
     private List<Record> records;
 
     @Data

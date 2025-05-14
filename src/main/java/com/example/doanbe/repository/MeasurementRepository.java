@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface MeasurementRepository extends MongoRepository<Measurement, String> {
     List<Measurement> findByProjectId(String projectId);
+    void deleteByProjectId(String projectId);
 }
 

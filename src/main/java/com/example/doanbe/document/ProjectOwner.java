@@ -10,6 +10,7 @@ import lombok.*;
 public class ProjectOwner {
     private String id;
     private String userName;
+    private String email;
     private String displayName;
     private String avatar;
 }

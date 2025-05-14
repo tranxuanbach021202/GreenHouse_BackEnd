@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 public interface AuthService {
-    SuccessResponse authenticate(LoginRequest loginRequest);
 
     ResponseEntity<?> registerUser(SignUpRequest signupRequest);
 
@@ -18,5 +17,13 @@ public interface AuthService {
 
     ResponseEntity<?> logoutUser(HttpServletRequest request);
 
+    ResponseEntity<?> forgotPassword(String username);
+
+    String verifyOtpAndGenerateResetToken(String username, String otp);
+
+    void resetPassword(String resetToken, String newPassword);
+
     ResponseEntity<?> refreshToken(RefreshTokenRequest refreshTokenRequest);
+
+    void logout(String token);
 }

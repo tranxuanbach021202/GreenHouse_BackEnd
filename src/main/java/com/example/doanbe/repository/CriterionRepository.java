@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CriterionRepository extends MongoRepository<Criterion, String> {
     List<Criterion> findByProjectId(String projectId);
+    void deleteByProjectId(String projectId);
 }

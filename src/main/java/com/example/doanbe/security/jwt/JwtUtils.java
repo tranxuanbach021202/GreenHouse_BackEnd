@@ -5,8 +5,10 @@ import com.example.doanbe.services.UserDetailsImpl;
 import com.sun.security.auth.UserPrincipal;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -87,6 +89,23 @@ public class JwtUtils {
                 .signWith(key)
                 .compact();
     }
+
+    public String generateResetToken(String username) {
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+
+        return Jwts.builder()
+                .subject(username)
+                .claim("type", "RESET")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+                .signWith(key)
+                .compact();
+    }
+
+
+
+
+
 
 
 

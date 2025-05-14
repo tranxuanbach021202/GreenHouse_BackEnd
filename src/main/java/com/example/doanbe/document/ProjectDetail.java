@@ -20,13 +20,13 @@ public class ProjectDetail {
     private String projectId;
     private String projectCode;
     private String projectName;
+    private String thumbnailUrl;
+    private String description;
     private List<Criterion> criterionList;
     private List<Treatment> treatmentList;
     private Factor factor;
-    private String thumbnailUrl;
     @Field("owner")
     private ProjectOwner owner;
-    private String description;
     private String experimentType;
     private int block;
     private int replicate;

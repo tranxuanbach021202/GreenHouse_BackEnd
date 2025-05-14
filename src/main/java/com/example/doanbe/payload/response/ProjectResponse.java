@@ -18,10 +18,12 @@ public class ProjectResponse {
     private String projectName;
     private Date startDate;
     private Date endDate;
+    private List<ProjectMemberResponse> members;
     private String description;
     private String thumbnailUrl;
     private String experimentType;
     private List<List<String>> layout;
+    private String status;
     private Date createdAt;
     private Date updatedAt;
 }

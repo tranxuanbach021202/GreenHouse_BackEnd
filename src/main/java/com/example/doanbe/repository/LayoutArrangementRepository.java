@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface LayoutArrangementRepository extends MongoRepository<Experiment, String> {
     Optional<Experiment> findByProjectId(String projectId);
+    void deleteByProjectId(String projectId);
 }

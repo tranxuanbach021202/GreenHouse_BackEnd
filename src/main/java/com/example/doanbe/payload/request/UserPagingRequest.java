@@ -9,18 +9,27 @@ import lombok.Data;
 @Data
 public class UserPagingRequest {
     @Min(0)
-    @Builder.Default
-    private Integer page = 0;
-
+    private Integer page;
     @Min(1)
     @Max(100)
-    @Builder.Default
-    private Integer size = 20;
-
-    @Builder.Default
-    private String sortBy = "id";
-
-    @Builder.Default
-    private String sortDir = "asc";
+    private Integer size;
+    private String sortBy;
+    private String sortDir;
     private String search;
+
+    public int getPage() {
+        return page != null ? page : 0;
+    }
+
+    public int getSize() {
+        return size != null ? size : 20;
+    }
+
+    public String getSortBy() {
+        return sortBy != null ? sortBy : "id";
+    }
+
+    public String getSortDir() {
+        return sortDir != null ? sortDir : "asc";
+    }
 }

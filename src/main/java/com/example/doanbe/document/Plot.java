@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Plot {
+    private String idTreatment;
     private String treatmentCode;
     private String plantName;
 }
